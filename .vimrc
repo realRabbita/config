@@ -1,5 +1,4 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""               
-"               
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" 
 "               ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗
 "               ██║   ██║██║████╗ ████║██╔══██╗██╔════╝
 "               ██║   ██║██║██╔████╔██║██████╔╝██║     
@@ -7,7 +6,7 @@
 "                ╚████╔╝ ██║██║ ╚═╝ ██║██║  ██║╚██████╗
 "                 ╚═══╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝
 "               
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""               
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Disable compatibility with vi which can cause unexpected issues.
 set nocompatible
@@ -154,6 +153,10 @@ call plug#begin('~/.vim/plugged')
 
   Plug 'jiangmiao/auto-pairs'
 
+  Plug 'godlygeek/tabular'
+ 
+  Plug 'preservim/vim-markdown'
+
 call plug#end()
 
 " }}}
@@ -166,13 +169,7 @@ let mapleader = '\'
 " Press \\ to jump back to the last cursor position.
 nnoremap <leader>\ ``
 
-" Press \p to print the current file to the default printer from a Linux operating system.
-" View available printers:   lpstat -v
-" Set default printer:       lpoptions -d <printer_name>
-" <silent> means do not display output.
-nnoremap <silent> <leader>p :%w !lp<CR>
-
-" Type jj to exit insert mode quickly.
+" Type qq to exit insert mode quickly.
 inoremap qq <Esc>
 
 " Press the space bar to type the : character in command mode.
@@ -183,7 +180,7 @@ nnoremap <space> :
 " nnoremap N Nzz
 
 " Yank from cursor to the end of line.
-nnoremap Y y$
+" nnoremap Y y$
 
 " open new split panes to right and bottom, which feels more natural
 set splitbelow
@@ -214,13 +211,47 @@ noremap <c-right> <c-w><
 " NERDTree specific mappings.
 " Map the F3 key to toggle NERDTree open and close.
 " nnoremap <F3> :NERDTreeToggle<CR>
-
 nnoremap <leader>n :NERDTreeFocus<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <leader>f :NERDTreeFind<CR>
 
 " Have nerdtree ignore certain files and directories.
 let NERDTreeIgnore=['\.git$', '\.jpg$', '\.mp4$', '\.ogg$', '\.iso$', '\.pdf$', '\.pyc$', '\.odt$', '\.png$', '\.gif$', '\.db$']
+
+" Just lazy stuff to avoid going to the normal mode and undoing things and back again in insert mode.
+inoremap <C-u> <ESC>ui
+
+" Map <tab> for trigger completion, completion confirm, snippet expand and jump
+" like VSCode. >
+"
+	inoremap <silent><expr> <TAB>
+	  \ pumvisible() ? coc#_select_confirm() :
+	  \ coc#expandableOrJumpable() ?
+	  \ "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+	  \ <SID>check_back_space() ? "\<TAB>" :
+	  \ coc#refresh()
+	function! s:check_back_space() abort
+	  let col = col('.') - 1
+	  return !col || getline('.')[col - 1]  =~# '\s'
+	endfunction
+ 
+	let g:coc_snippet_next = '<tab>'
+
+" <
+" Note: the `coc-snippets` extension is required for this to work.
+
+" Formatting selected code.
+xmap <leader>s  <Plug>(coc-format-selected)
+nmap <leader>s  <Plug>(coc-format-selected)
+
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocActionAsync('format')
+
+" Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call CocAction('fold', <f-args>)
+
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR :call CocActionAsync('runCommand', 'editor.action.organizeImport')
 
 " }}}
 
@@ -317,14 +348,3 @@ let g:lightline = {
       \ 'colorscheme': 'PaperColor',
       \ }
 " }}}
-
-" use <tab> for trigger completion and navigate to the next complete item
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~ '\s'
-endfunction
-
-inoremap <silent><expr> <Tab>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<Tab>" :
-      \ coc#refresh()
