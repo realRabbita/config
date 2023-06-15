@@ -1,4 +1,4 @@
-# config
+# config (tell me how to setup new computer quickly)
 
 1. install vim plug manager.
 ```shell
