@@ -12,3 +12,5 @@ mv solarized.vim ~/.vim/colors/
 ```
 
 3. install nodejs if not have.
+
+4. zsh should be installed.
